@@ -1,0 +1,47 @@
+.container {
+    position: absolute;
+    left: 0%;
+    top: 9%;
+
+    width: 40%;
+    height: 90%;
+}
+#login-div {
+    position: absolute;
+    left: 10%;
+    bottom: 5%;
+
+    width: 80%;
+    height: 30%;
+
+    text-align: center;
+}
+#login-btn {
+    position: absolute;
+    left: 35%;
+
+    height: 50%;
+    width: 30%;
+
+    font-size: 30px;
+}
+#signup-div {
+    position: absolute;
+    left: 10%;
+    top: 5%;
+
+    width: 80%;
+    height: 30%;
+
+    text-align: center;
+}
+#signup-btn {
+    position: absolute;
+    left: 35%;
+
+    height: 50%;
+    width: 30%;
+
+    font-size: 30px;
+    z-index: +1;
+}

@@ -1,0 +1,9 @@
+button {
+    position: absolute;
+
+    width: 15%;
+    height: 10%;
+
+    background-color: rgba(115,142,142,1);
+    color: rgb(191,209,215);
+}

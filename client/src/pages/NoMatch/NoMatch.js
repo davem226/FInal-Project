@@ -1,7 +1,7 @@
 import React from "react";
 import Container from "../../components/Container";
 
-const NoMatch = () => (
+export const NoMatch = () => (
   <Container fluid>
           <h1>404 Page Not Found</h1>
           <h1>
@@ -11,4 +11,3 @@ const NoMatch = () => (
           </h1>
   </Container>
 );
-export default NoMatch;
