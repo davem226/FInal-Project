@@ -1,2 +1,2 @@
 export * from "./InfoContainer";
-export * from "./LoginContainer";
+export * from "./AuthContainer";

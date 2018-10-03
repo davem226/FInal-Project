@@ -1,2 +1,4 @@
-export * from "./Button";
-export * from "./Input";
+export * from "./SignupBtn";
+export * from "./LoginBtn";
+export * from "./AuthForm";
+export * from "./Tab";

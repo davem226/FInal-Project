@@ -1,0 +1,20 @@
+.icon {
+    position: absolute;
+    left: 3.5%;
+    top: 5%;
+
+    height: 90%;
+    width: 4%;
+}
+.app-name {
+    font-family: 'Roboto Mono', monospace;
+    font-size: 1.75rem;
+    color: white;
+    font-weight: bold;
+
+    /* text-shadow:
+		-1px -1px 0 skyblue,
+		1px -1px 0 skyblue,
+		-1px 1px 0 skyblue,
+		1px 1px 0 skyblue; */
+}

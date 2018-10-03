@@ -1,8 +1,6 @@
 .message {
     font-family: 'Roboto Mono', monospace;
-    font-size: 1.5rem;
-    font-weight: bold;
-    /* color: rgb(5,54,139); */
-    /* color: mediumspringgreen; */
+    font-size: 1.2rem;
+
     color: black;
 }

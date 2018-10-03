@@ -1,4 +1,4 @@
 import React from 'react';
-import "./Nav.css";
+import "./Logo.css";
 
-export const AppName = () => <div className="app-name">appName</div>
+export const AppName = () => <div className="app-name">myNews</div>

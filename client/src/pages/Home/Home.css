@@ -1,47 +1,132 @@
-.container {
+#main.container {
+    width: 40%;
+    height: 50%;
+
+    position: absolute;
+    left: 30%;
+    top: 20%;
+
+}
+.tab {
+    width: 95%;
+    height: 15%;
+
+    position: absolute;
+    top: 0%;
+    left: 2.5%;
+
+    border-bottom: 1px solid lightgray;
+}
+#info.container {
+    width: 40%;
+    height: 100%;
+
     position: absolute;
     left: 0%;
-    top: 9%;
-
-    width: 40%;
-    height: 90%;
+    top: 0%;
+    
+    background-color: rgba(135, 206, 235, .85);
+    /* background-color: rgba(211, 211, 211, .95); */
+    /* background-color: rgba(128, 128, 128, .85); */
 }
-#login-div {
-    position: absolute;
-    left: 10%;
-    bottom: 5%;
+#auth.container {
+    width: 60%;
+    height: 100%;
 
-    width: 80%;
-    height: 30%;
+    position: absolute;
+    right: 0%;
+    top: 0%;
+
+    background-color: rgb(255, 255, 255, 1);
+    border: 0.5px solid lightgray;
+    border-left: none;
+}
+.app-name {
+    width: 90%;
+
+    position: absolute;
+    top: 10%;
+    left: 5%;
 
     text-align: center;
 }
-#login-btn {
+#signup.message {
+    width: 95%;
+
     position: absolute;
-    left: 35%;
-
-    height: 50%;
-    width: 30%;
-
-    font-size: 30px;
-}
-#signup-div {
-    position: absolute;
-    left: 10%;
-    top: 5%;
-
-    width: 80%;
-    height: 30%;
+    top: 35%;
+    left: 2.5%;
 
     text-align: center;
 }
-#signup-btn {
+#free.message {
+    width: 95%;
+
     position: absolute;
-    left: 35%;
+    top: 60%;
+    left: 2.5%;
 
+    text-align: center;
+}
+.button {
+    width: 50%;
+    height: 15%;
+
+    position: absolute;
+    left: 25%;
+
+    background-color: salmon;
+
+    font-size: 1.2rem;
+    color: white;
+
+}
+div.onload > #signup.button {
+    top: 65%;
+}
+div.onload > #login.button {
+    top: 30%;
+}
+form {
+    width: 90%;
     height: 50%;
-    width: 30%;
 
-    font-size: 30px;
-    z-index: +1;
+    position: absolute;
+    top: 20%;
+    left: 5%;
+}
+input {
+    width: 70%;
+    height: 20%;
+
+    position: absolute;
+    left: 12%;
+
+    font-size: 14px;
+    padding-left: 14px;
+}
+#pw.input {
+    top: 50%;
+}
+#un.input {
+    top: 15%;
+}
+a > .button {
+    width: 70%;
+
+    top: 66%;
+    left: 15%;
+}
+div.tab > button {
+    width: 54%;
+    height: 100%;
+
+    background-color: midnightblue;
+    color: white;
+}
+div.tab > #signup.button {
+    left: 49%;
+}
+div.tab > #login.button {
+    left: -3%;
 }
