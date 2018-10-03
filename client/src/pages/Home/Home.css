@@ -5,7 +5,6 @@
     position: absolute;
     left: 30%;
     top: 20%;
-
 }
 .tab {
     width: 95%;
@@ -121,7 +120,7 @@ div.tab > button {
     width: 54%;
     height: 100%;
 
-    background-color: midnightblue;
+    background-color: goldenrod;
     color: white;
 }
 div.tab > #signup.button {

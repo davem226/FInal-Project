@@ -1,0 +1,18 @@
+#main.container {
+    width: 95%;
+    height: 95%;
+
+    position: absolute;
+    left: 2.5%;
+    top: 2.5%;
+}
+#topic.container {
+    width: 45%;
+    height: 100%;
+
+    position: absolute;
+    left: 0%;
+    top: 0%;
+
+    background-color: rgba(135, 206, 235, .85);
+}
