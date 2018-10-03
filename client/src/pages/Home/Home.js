@@ -12,8 +12,9 @@ export class Home extends Component {
 
     componentDidMount() {
         this.setState({ shown: "onload" });
-    }
-    changeView = view => this.setState({ shown: view })
+    };
+
+    changeView = view => this.setState({ shown: view });
 
     render() {
         return (

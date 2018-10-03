@@ -1,4 +1,4 @@
-#main.container {
+#profile.container {
     width: 95%;
     height: 95%;
 
@@ -14,5 +14,45 @@
     left: 0%;
     top: 0%;
 
-    background-color: rgba(135, 206, 235, .85);
+    background-color: rgba(135, 206, 235, .9);
+}
+div#topic > .app-name {
+    top: 2%;
+}
+#enter.message {
+    width: 90%;
+
+    position: absolute;
+    top: 8%;
+    left: 5%;
+
+    text-align: center;
+}
+div#topic > form {
+    width: 85%;
+    height: 7%;
+
+    position: absolute;
+    top: 13%;
+    left: 7.5%;
+}
+div#topic > form > input {
+    width: 50%;
+    height: 90%;
+
+    position: absolute;
+    left: 0%;
+    top: 0%;
+
+    font-size: 18px;
+}
+#search.button {
+    width: 35%;
+    height: 100%;
+
+    position: absolute;
+    left: 65%;
+    top: 0%;
+
+    background-color: goldenrod;
 }

@@ -3,8 +3,9 @@ import Container from "../../components/Containers/Subs";
 import { TopicContainer, ArticleContainer, TopicList } from "../../components/Containers"
 import { AppName } from "../../components/Logo";
 import Message from "../../components/Message";
-import {ArticleSearch, SearchBtn} from "../../components/Forms";
+import { ArticleSearch, SearchBtn, isLiked } from "../../components/Forms";
 import Topic from "../../components/Topic";
+import Article from "../../components/Article";
 import "./Profile.css";
 
 export class Profile extends Component {
@@ -15,10 +16,10 @@ export class Profile extends Component {
     };
 
     componentDidMount() {
-        this.getSavedArticles();
+        this.getTopics();
     };
 
-    getSavedArticles = () => {
+    getTopics = () => {
 
     };
 
@@ -32,10 +33,10 @@ export class Profile extends Component {
 
     render() {
         return (
-            <Container id="main">
+            <Container id="profile">
                 <TopicContainer>
                     <AppName />
-                    <Message text="Enter a topic and get your personalized news!" />
+                    <Message id="enter" text="Enter a topic and get your personalized news!" />
                     <ArticleSearch>
                         <SearchBtn onClick={() => this.searchArticles} />
                     </ArticleSearch>
