@@ -1,4 +1,4 @@
 import React from "react";
 
-const Topic = ({ topic }) => <div className="topic">{topic}</div>
+const Topic = ({ topic }) => <button className="topic">{topic}</button>
 export default Topic;
