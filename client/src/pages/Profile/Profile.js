@@ -12,8 +12,8 @@ import "./Profile.css";
 export class Profile extends Component {
     state = {
         query: "",
-        articles: [],
-        isSelected: ""
+        contents: [],
+        topicShown: ""
     };
 
     componentDidMount() {
@@ -33,28 +33,30 @@ export class Profile extends Component {
 
     searchArticles = event => {
         event.preventDefault();
-        this.showTopic();
-
-
+        if (this.state.query) {
+            news.get(this.state.query)
+                .then(results => this.addTopic(results))
+                .catch(err => console.log(err));
+        }
     };
 
-    showTopic = () => {
-        const newTopic = this.state.query;
-        const newArticle = { topic: newTopic };
-        if (newTopic) {
-            this.setState((state) => {
-                return {
-                    articles: state.articles.concat(newArticle),
-                    query: ""
-                };
-            });
+    addTopic = (apiRes) => {
+        const newEntry = {
+            topic: this.state.query,
+            articles: apiRes.data.articles
         }
+        console.log(apiRes.data.articles);
+        this.setState((state) => {
+            return {
+                contents: state.contents.concat(newEntry),
+                query: ""
+            }
+        });
         document.getElementById("article-search").reset();
     };
 
-    showArticles = (event, topic) => {
-        event.preventDefault();
-
+    showArticles = (topic) => {
+        this.setState({ topicShown: topic });
     };
 
     saveChoice = () => {
@@ -62,6 +64,7 @@ export class Profile extends Component {
     };
 
     render() {
+        console.log(this.state.contents);
         return (
             <Container id="profile">
                 <TopicContainer>
@@ -74,19 +77,32 @@ export class Profile extends Component {
                     </ArticleSearch>
 
                     <TopicList>
-                        {this.state.articles.map(article => (
+                        {this.state.contents.map(x => (
                             <Topic
-                                topic={article.topic}
-                                onClick={this.showArticles}
+                                topic={x.topic}
+                                onclick={() => this.showArticles(x.topic)}
                             />
                         ))}
                     </TopicList>
                 </TopicContainer>
-                <ArticleContainer>
-                    <Article>
-                        <IsLiked onClick={() => this.saveChoice} />
-                    </Article>
-                </ArticleContainer>
+                {this.state.topicShown ? (
+                    <ArticleContainer>
+                        {this.state.contents.filter(x =>
+                            x.topic === this.state.topicShown)[0].articles
+                            .map(article => (
+                                < Article
+                                    link={article.url}
+                                    title={article.title}
+                                    source={article.source.name}
+                                    preview={article.description}
+                                >
+                                    <IsLiked onClick={() => this.saveChoice} />
+                                </Article>
+                            ))
+                        }
+                    </ArticleContainer>
+                ) : ("")
+                }
             </Container>
         );
     }

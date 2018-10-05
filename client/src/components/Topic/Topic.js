@@ -1,4 +1,4 @@
 import React from "react";
 
-const Topic = ({ topic }) => <button className="topic">{topic}</button>
+const Topic = ({ onclick, topic }) => <button onClick={onclick} className="topic">{topic}</button>
 export default Topic;
