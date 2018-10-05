@@ -1,3 +1,9 @@
+.logo {
+    width: 100%;
+
+    position: absolute;
+}
+
 .icon {
     position: absolute;
     left: 3.5%;
@@ -6,17 +12,63 @@
     height: 90%;
     width: 4%;
 }
+.sun {
+    height: 65%;
+    width: 9%;
+
+    position: absolute;
+    left: 44%;
+    bottom: -25%;
+
+    background-color: rgb(254, 250, 41);
+    border-radius: 50%;
+    border-top: 2px solid white;
+    border-left: 2px solid white;
+    border-right: 2px solid white;
+    display: inline-block;
+  }
+.sky-bar {
+    width: 51%;
+    height: 110%;
+
+    position: absolute;
+    left: 25%;
+    bottom: 45%;
+
+    background-color: rgb(118, 193, 255);
+}
+.yellow-bar {
+    width: 51%;
+    height: 44%;
+
+    position: absolute;
+    left: 25%;
+    bottom: -1%;
+
+    background-color: rgb(255, 253, 158);
+}
+.orange-bar {
+    width: 51%;
+    height: 22%;
+
+    position: absolute;
+    left: 25%;
+    bottom: -25%;
+
+    background-color: rgb(253, 149, 2);
+}
 .app-name {
+    width: 50%;
+
+    position: absolute;
+    left: 25%;
+    bottom: 0%;
+
     font-family: 'Roboto Mono', monospace;
     font-size: 1.85rem;
     font-weight: bold;
+    transform: scaleY(2);
 
-    color: white;
-    text-decoration: underline;
-
-    /* text-shadow:
-		-1px -1px 0 skyblue,
-		1px -1px 0 skyblue,
-		-1px 1px 0 skyblue,
-		1px 1px 0 skyblue; */
+    color: rgb(107, 125, 137);
+    text-decoration: royalblue underline;
 }

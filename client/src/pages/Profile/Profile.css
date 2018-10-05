@@ -14,9 +14,10 @@
     left: 0%;
     top: 0%;
 
-    background-color: rgba(135, 206, 235, .9);
+    /* background-color: rgba(135, 206, 235, .9); */
+    background-color: rgba(135, 206, 250, .9);
 }
-div#topic > .app-name {
+div#topic > .logo {
     top: 2%;
 }
 #enter.message {
@@ -56,6 +57,7 @@ div#topic > form > input {
     top: 0%;
 
     background-color: goldenrod;
+    color: royalblue;
 }
 #topic-list.container {
     width: 80%;
@@ -112,6 +114,7 @@ div#topic > form > input {
 div.article > div.color-bar {
     width: 102%;
     height: 10px;
+    border-radius: 3px;
 
     position: relative;
     top: -13px;

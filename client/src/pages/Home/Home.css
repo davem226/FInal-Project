@@ -24,9 +24,7 @@
     left: 0%;
     top: 0%;
     
-    background-color: rgba(135, 206, 235, .85);
-    /* background-color: rgba(211, 211, 211, .95); */
-    /* background-color: rgba(128, 128, 128, .85); */
+    background-color: rgba(255, 255, 255, .9);
 }
 #auth.container {
     width: 60%;
@@ -36,12 +34,13 @@
     right: 0%;
     top: 0%;
 
-    background-color: rgb(255, 255, 255, 1);
+    background-color: rgb(255, 255, 255, .9);
     border: 0.5px solid lightgray;
     border-left: none;
 }
-.app-name {
+.logo {
     width: 90%;
+    height: 1.65rem;
 
     position: absolute;
     top: 10%;
@@ -74,7 +73,10 @@
     position: absolute;
     left: 25%;
 
-    background-color: salmon;
+    /* background-color: salmon; */
+    background-color: rgb(253, 149, 2);
+    /* background-color: orange; */
+    /* background-color: rgb(253, 125, 1); */
 
     font-size: 1.2rem;
     color: white;
@@ -120,7 +122,7 @@ div.tab > button {
     width: 54%;
     height: 100%;
 
-    background-color: goldenrod;
+    background-color:royalblue;
     color: white;
 }
 div.tab > #signup.button {
