@@ -100,7 +100,7 @@ div#topic > form > input {
     border-radius: 5px;
 
     position: relative;
-    top: -22px;
+    top: 0px;
     left: 3px;
 
     margin-left: 0.5%;
@@ -109,17 +109,40 @@ div#topic > form > input {
 
     background-color: white;
 }
+div.article > div.color-bar {
+    width: 102%;
+    height: 10px;
+
+    position: relative;
+    top: -13px;
+    left: -8px;
+
+    background-color: royalblue;
+}
 div.article > a {
     text-decoration: none;
 }
 div.article > a > h2 {
     position: relative;
-    top: 3px;
+    top: -22px;
 
     font-family: Arial, Helvetica, sans-serif;
     font-weight: bolder;
     font-size: 34px;
     color: black;
+}
+div.article > div.source {
+    width: fit-content;  
+    position: relative;
+    top: -42px;
+
+    font-size: 28px;
+    font-family: 'Times New Roman', Times, serif;
+    padding-left: 5px;
+    padding-right: 5px;
+
+    background-color: ghostwhite;
+    color: salmon;
 }
 div.article > p {
     position: relative;
@@ -130,17 +153,6 @@ div.article > p {
     line-height: 1.85rem;
 
     color: slategray;
-}
-div.article > div.source {    
-    position: relative;
-    top: 22px;
-
-    font-size: 28px;
-    font-family: 'Times New Roman', Times, serif;
-    padding-left: 5px;
-
-    background-color: lightgray;
-    color: midnightblue;
 }
 .is-liked {
     visibility: hidden;
