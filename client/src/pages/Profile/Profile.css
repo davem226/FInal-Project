@@ -1,13 +1,13 @@
 #profile.container {
     width: 95%;
-    height: 95%;
+    height: 97%;
 
     position: absolute;
-    left: 2.5%;
-    top: 2.5%;
+    left: 1%;
+    top: 2%;
 }
 #topic.container {
-    width: 45%;
+    width: 35%;
     height: 100%;
 
     position: absolute;
@@ -23,9 +23,10 @@ div#topic > .app-name {
     width: 90%;
 
     position: absolute;
-    top: 8%;
+    top: 9%;
     left: 5%;
 
+    font-size: 1.3rem;
     text-align: center;
 }
 #article-search {
@@ -33,7 +34,7 @@ div#topic > .app-name {
     height: 7%;
 
     position: absolute;
-    top: 13%;
+    top: 18%;
     left: 7.5%;
 }
 div#topic > form > input {
@@ -63,7 +64,7 @@ div#topic > form > input {
 
     position: absolute;
     left: 10%;
-    top: 30%;
+    top: 33%;
 }
 .topic {
     height: 15%;
@@ -81,13 +82,13 @@ div#topic > form > input {
     margin-bottom: 15px;
 }
 #article.container {
-    width: 54%;
+    width: 63%;
     height: 100%;
     overflow-y: auto;
     overflow-x: 0;
 
     position: absolute;
-    right: 0%;
+    left: 38%;
     top: 0%;
 
     background-color: rgba(211, 211, 211, .7);
@@ -107,32 +108,39 @@ div#topic > form > input {
     padding-right: 1%;
 
     background-color: white;
-
-    font-family: 'Roboto Mono', monospace;
 }
 div.article > a {
     text-decoration: none;
 }
 div.article > a > h2 {
+    position: relative;
+    top: 3px;
+
     font-family: Arial, Helvetica, sans-serif;
     font-weight: bolder;
     font-size: 34px;
-    color: midnightblue;
+    color: black;
 }
 div.article > p {
     position: relative;
-    top: -15px;
-    
+    top: -10px;
+
     font-family: Arial, Helvetica, sans-serif;
     font-size: 20px;
+    line-height: 1.85rem;
+
     color: slategray;
 }
 div.article > div.source {    
     position: relative;
-    top: 25px;
+    top: 22px;
 
     font-size: 28px;
     font-family: 'Times New Roman', Times, serif;
+    padding-left: 5px;
+
+    background-color: lightgray;
+    color: midnightblue;
 }
 .is-liked {
     visibility: hidden;

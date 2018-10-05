@@ -8,9 +8,11 @@
 }
 .app-name {
     font-family: 'Roboto Mono', monospace;
-    font-size: 1.75rem;
-    color: white;
+    font-size: 1.85rem;
     font-weight: bold;
+
+    color: white;
+    text-decoration: underline;
 
     /* text-shadow:
 		-1px -1px 0 skyblue,
