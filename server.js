@@ -1,7 +1,7 @@
 const express = require('express');
 const path = require('path');
 const bodyParser = require("body-parser");
-// const sequelize = require("sequelize");
+const db = require("./models");
 const routes = require("./routes");
 const PORT = process.env.PORT || 3001;
 const app = express();
@@ -13,11 +13,11 @@ app.use(bodyParser.json());
 // Serve static files from React app
 app.use(express.static(path.join(__dirname, 'client/build')));
 
-// Add routes, both API and view
+// Add routes
 app.use(routes);
 
-// Connect to the MySQL DB
-// sequelize.connect(process.env.MONGODB_URI || "mongodb://localhost/reactreadinglist");
+// Sync with models
+db.User.sync();
 
 // Start the API server
 app.listen(PORT, () => {

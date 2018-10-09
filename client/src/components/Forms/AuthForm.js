@@ -7,14 +7,14 @@ export const AuthForm = (props) => (
             id="un"
             name="username"
             value={props.username}
-            onChange={props.handleInputChange}
+            onChange={props.onchange}
             placeholder="USERNAME"
         />
         <Input
             id="pw"
             name="password"
             value={props.password}
-            onChange={props.handleInputChange}
+            onChange={props.onchange}
             placeholder="PASSWORD"
             type="password"
         />

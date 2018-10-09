@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Link } from "react-router-dom";
 import Container from "../../components/Containers/Subs";
 import { TopicContainer, ArticleContainer, TopicList } from "../../components/Containers"
 import { AppName } from "../../components/Logo";
@@ -81,6 +82,9 @@ export class Profile extends Component {
             <Container id="profile">
                 <TopicContainer>
                     <AppName />
+                    <Link to="/">
+                        <div id="logout">Log Out</div>
+                    </Link>
                     <Message id="enter" text="Enter a topic and get your personalized news!" />
                     <ArticleSearch
                         onchange={this.handleInputChange}

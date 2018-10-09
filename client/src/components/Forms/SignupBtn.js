@@ -1,10 +1,10 @@
 import React from "react";
 
-export const SignupBtn = ({ onClick }) => (
+export const SignupBtn = ({ onclick }) => (
     <button
         id="signup"
         className="button"
-        onClick={onClick}
+        onClick={onclick}
     >
         SIGN UP
     </button>

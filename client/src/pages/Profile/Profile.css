@@ -185,3 +185,8 @@ span.is-liked > button {
 #no.button {
     left: 60%;
 }
+#logout {
+    position: absolute;
+    top: 0%;
+    right: 0%;
+}

@@ -112,7 +112,7 @@ input {
 #un.input {
     top: 15%;
 }
-a > .button {
+div#auth.container > .button {
     width: 70%;
 
     top: 66%;
