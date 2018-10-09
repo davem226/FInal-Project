@@ -14,7 +14,7 @@ app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, 'client/build')));
 
 // Add routes, both API and view
-// app.use(routes);
+app.use(routes);
 
 // Connect to the MySQL DB
 // sequelize.connect(process.env.MONGODB_URI || "mongodb://localhost/reactreadinglist");

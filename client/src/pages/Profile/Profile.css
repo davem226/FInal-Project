@@ -102,7 +102,7 @@ div#topic > form > input {
     border-radius: 5px;
 
     position: relative;
-    top: 0px;
+    top: 15px;
     left: 3px;
 
     margin-left: 0.5%;
@@ -113,7 +113,7 @@ div#topic > form > input {
 }
 div.article > div.color-bar {
     width: 102%;
-    height: 10px;
+    height: 7px;
     border-radius: 3px;
 
     position: relative;
@@ -158,5 +158,30 @@ div.article > p {
     color: slategray;
 }
 .is-liked {
-    visibility: hidden;
+    width: 300px;
+    height: 120px;
+    border-radius: 10px;
+
+    position: absolute;
+    top: 10%;
+    left: 20%;
+
+    background-color: rgba(135, 206, 250, 1);
+
+    text-align: center;
+    padding: 15px;
+    padding-bottom: 0px;
+}
+span.is-liked > button {
+    width: 30%;
+    height: 25%;
+
+    position: absolute;
+    top: 50%;
+    left: 10%;
+
+    z-index: +1;
+}
+#no.button {
+    left: 60%;
 }

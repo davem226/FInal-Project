@@ -13,7 +13,8 @@ export class Profile extends Component {
     state = {
         query: "",
         contents: [],
-        topicShown: ""
+        topicShown: "",
+        toBeRated: []
     };
 
     componentDidMount() {
@@ -59,12 +60,23 @@ export class Profile extends Component {
         this.setState({ topicShown: topic });
     };
 
-    saveChoice = () => {
+    showIsLiked = (id) => {
+        this.setState(state => {
+            return {
+                toBeRated: state.toBeRated.concat(id)
+            }
+        });
+    };
 
+    saveChoice = (id) => {
+        this.setState(state => {
+            return {
+                toBeRated: state.toBeRated.filter(i => i !== id)
+            }
+        });
     };
 
     render() {
-        console.log(this.state.contents);
         return (
             <Container id="profile">
                 <TopicContainer>
@@ -89,14 +101,18 @@ export class Profile extends Component {
                     <ArticleContainer>
                         {this.state.contents.filter(x =>
                             x.topic === this.state.topicShown)[0].articles
-                            .map(article => (
+                            .map((article, i) => (
                                 < Article
+                                    id={i}
                                     link={article.url}
                                     title={article.title}
                                     source={article.source.name}
                                     preview={article.description}
+                                    onclick={() => this.showIsLiked(i)}
                                 >
-                                    <IsLiked onClick={() => this.saveChoice} />
+                                    {this.state.toBeRated.includes(i) ? (
+                                        <IsLiked onClick={() => this.saveChoice(i)} />
+                                    ) : ("")}
                                 </Article>
                             ))
                         }
