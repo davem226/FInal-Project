@@ -1,7 +1,10 @@
 import axios from "axios";
 
 export default {
-    signup: (userInfo) => {
-        axios.post("/api/auth", userInfo);
+    logIn: (username) => {
+        return axios.get("/api/auth/" + username);
+    },
+    signUp: (userInfo) => {
+        return axios.post("/api/auth", userInfo);
     }
 }

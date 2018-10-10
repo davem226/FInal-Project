@@ -28,14 +28,26 @@ export class Home extends Component {
     };
 
     signup = () => {
-        this.state.username && this.state.password ? (
-            API.signup({
+        if (this.state.username && this.state.password) {
+            API.signUp({
                 username: this.state.username,
                 password: this.state.password
             })
-                .then(res => res === true ? this.authenticateUser() : null)
+                .then(res => res.data === true ? this.authenticateUser() : null)
                 .catch(err => console.log(err))
-        ) : (null)
+        }
+    };
+
+    login = () => {
+        console.log(this.state.username);
+        if (this.state.username && this.state.password) {
+            API.logIn(this.state.username)
+                .then(res => {
+                    console.log(res);
+                    res.data.password === this.state.password ? this.authenticateUser() : null;
+                })
+                .catch(err => console.log(err))
+        }
     };
 
     authenticateUser = () => {
@@ -71,7 +83,7 @@ export class Home extends Component {
                             <LoginBtn onclick={() => this.changeView("login")} />
                             <SignupBtn onclick={() => this.changeView("signup")} />
                         </Tab>
-                        <AuthForm />
+                        <AuthForm onchange={this.handleInputChange} />
                         <LoginBtn onclick={this.login} />
                     </AuthContainer>
                 ) : ("")

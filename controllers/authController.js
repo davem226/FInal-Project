@@ -2,14 +2,14 @@ const db = require("../models");
 
 module.exports = {
     verifyUser: (req, res) => {
+        console.log(req.params);
         db.User
             .findOne({
                 where: {
-                    username: req.params.username,
-                    password: req.params.password
+                    username: req.params.username
                 }
             })
-            .then(data => res.send(true))
+            .then(data => res.json(data))
             .catch(err => res.status(422).json(err));
     },
     addUser: (req, res) => {
