@@ -8,6 +8,6 @@ export default {
         return axios.post("/api/auth", userInfo);
     },
     getTopics: (uid) => {
-        return axios.get("api/topic/" + uid);
+        return axios.get("/api/topic/" + uid);
     }
 }

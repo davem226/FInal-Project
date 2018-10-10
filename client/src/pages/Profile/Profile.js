@@ -23,13 +23,12 @@ export class Profile extends Component {
 
     componentDidMount() {
         const uid = document.getElementById("root").getAttribute("uid");
-        this.getArticles(uid);
+        if (uid) {this.getArticles(uid)}
     };
 
     getArticles = (uid) => {
         API.getTopics(uid)
             .then(res => {
-                console.log(res);
                 res.data.map(x => this.searchArticles(x.topic));
             })
             .catch(err => console.log(err));
@@ -42,8 +41,10 @@ export class Profile extends Component {
         });
     };
 
-    searchArticles = (event, topic) => {
+    searchArticles = (event, savedTopic) => {
         event.preventDefault();
+        const topic = savedTopic ? savedTopic : this.state.query;
+        console.log(topic);
         if (topic) {
             news.get(topic)
                 .then(results => this.addTopic(this.state.query, results))
@@ -103,7 +104,7 @@ export class Profile extends Component {
                     <ArticleSearch
                         onchange={this.handleInputChange}
                     >
-                        <SearchBtn onClick={() => this.searchArticles(this.state.query)} />
+                        <SearchBtn onClick={this.searchArticles} />
                     </ArticleSearch>
 
                     <TopicList>
