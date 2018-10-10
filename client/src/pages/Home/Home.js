@@ -11,12 +11,17 @@ export class Home extends Component {
         shown: "",
         username: "",
         password: "",
+        uid: "",
         isAuthenticated: false
     };
 
     componentDidMount() {
         this.setState({ shown: "onload" });
     };
+
+    componentWillUnmount() {
+        document.getElementById("root").setAttribute("uid", this.state.uid);
+    }
 
     changeView = view => this.setState({ shown: view });
 
@@ -39,19 +44,22 @@ export class Home extends Component {
     };
 
     login = () => {
-        console.log(this.state.username);
         if (this.state.username && this.state.password) {
             API.logIn(this.state.username)
                 .then(res => {
-                    console.log(res);
-                    res.data.password === this.state.password ? this.authenticateUser() : null;
+                    res.data.password === this.state.password ? (
+                        this.authenticateUser(res.data.id)
+                    ) : null;
                 })
                 .catch(err => console.log(err))
         }
     };
 
-    authenticateUser = () => {
-        this.setState({ isAuthenticated: true });
+    authenticateUser = (uid) => {
+        this.setState({
+            isAuthenticated: true,
+            uid: uid
+        });
     };
 
     render() {

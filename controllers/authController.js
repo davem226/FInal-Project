@@ -2,7 +2,6 @@ const db = require("../models");
 
 module.exports = {
     verifyUser: (req, res) => {
-        console.log(req.params);
         db.User
             .findOne({
                 where: {

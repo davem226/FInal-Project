@@ -8,10 +8,13 @@ import { ArticleSearch, SearchBtn, IsLiked } from "../../components/Forms";
 import Topic from "../../components/Topic";
 import Article from "../../components/Article";
 import news from "../../utils/news";
+import API from "../../utils/api";
 import "./Profile.css";
 
 export class Profile extends Component {
     state = {
+        uid: "",
+        isAuthenticated: false,
         query: "",
         contents: [],
         topicShown: "",
@@ -19,6 +22,8 @@ export class Profile extends Component {
     };
 
     componentDidMount() {
+        const uid = document.getElementById("root").getAttribute("uid");
+        this.setState({uid: uid});
         this.getArticles();
     };
 
@@ -40,6 +45,10 @@ export class Profile extends Component {
                 .then(results => this.addTopic(results))
                 .catch(err => console.log(err));
         }
+    };
+
+    saveTopic = () => {
+
     };
 
     addTopic = (apiRes) => {
@@ -78,6 +87,7 @@ export class Profile extends Component {
     };
 
     render() {
+        console.log(this.state.uid);
         return (
             <Container id="profile">
                 <TopicContainer>
