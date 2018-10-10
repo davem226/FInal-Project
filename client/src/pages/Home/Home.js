@@ -20,7 +20,9 @@ export class Home extends Component {
     };
 
     componentWillUnmount() {
-        document.getElementById("root").setAttribute("uid", this.state.uid);
+        if (this.state.uid) {
+            document.getElementById("root").setAttribute("uid", this.state.uid);
+        }
     }
 
     changeView = view => this.setState({ shown: view });
@@ -38,7 +40,7 @@ export class Home extends Component {
                 username: this.state.username,
                 password: this.state.password
             })
-                .then(res => res.data === true ? this.authenticateUser() : null)
+                .then(res => res.data ? this.authenticateUser(res.data.id) : null)
                 .catch(err => console.log(err))
         }
     };

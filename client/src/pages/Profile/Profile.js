@@ -23,8 +23,10 @@ export class Profile extends Component {
 
     componentDidMount() {
         const uid = document.getElementById("root").getAttribute("uid");
-        if (uid) { this.getArticles(uid) };
-        this.setState({uid: uid});
+        if (uid) {
+            this.getArticles(uid);
+            this.setState({ uid: uid });
+        }
     };
 
     getArticles = (uid) => {
@@ -42,29 +44,29 @@ export class Profile extends Component {
         });
     };
 
-    searchArticles = (event, savedTopic) => {
-        event.preventDefault();
-        const topic = savedTopic ? savedTopic : this.state.query;
+    searchArticles = topic => {
         if (topic) {
             news.get(topic)
                 .then(results => {
-                    this.saveTopic({
-                        uid: this.state.uid,
-                        topic: this.state.query
-                    });
-                    this.addTopic(this.state.query, results);
+                    if (this.state.query) {
+                        this.saveTopic({
+                            uid: this.state.uid,
+                            topic: this.state.query
+                        });
+                    }
+                    this.showTopic(topic, results);
                 })
                 .catch(err => console.log(err));
         }
     };
 
     saveTopic = ({ topic, uid }) => {
-        API.saveTopic({topic, uid})
-            .then(res => console.log("topic saved"))
+        API.saveTopic({ topic, uid })
+            .then(res => null)
             .catch(err => console.log(err));
     };
 
-    addTopic = (topic, apiRes) => {
+    showTopic = (topic, apiRes) => {
         const newEntry = {
             topic: topic,
             articles: apiRes.data.articles
@@ -110,7 +112,7 @@ export class Profile extends Component {
                     <ArticleSearch
                         onchange={this.handleInputChange}
                     >
-                        <SearchBtn onClick={this.searchArticles} />
+                        <SearchBtn onClick={() => this.searchArticles(this.state.query)} />
                     </ArticleSearch>
 
                     <TopicList>

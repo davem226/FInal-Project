@@ -17,7 +17,7 @@ module.exports = {
                 username: req.body.username,
                 password: req.body.password
             })
-            .then(dbUser => res.send(true))
+            .then(dbUser => res.send(dbUser))
             .catch(err => res.status(422).json(err));
     }
 }
