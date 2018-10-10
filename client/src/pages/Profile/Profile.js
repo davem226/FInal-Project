@@ -23,8 +23,16 @@ export class Profile extends Component {
 
     componentDidMount() {
         const uid = document.getElementById("root").getAttribute("uid");
-        this.setState({uid: uid});
-        this.getArticles();
+        this.getArticles(uid);
+    };
+
+    getArticles = (uid) => {
+        API.getTopics(uid)
+            .then(res => {
+                console.log(res);
+                res.data.map(x => this.searchArticles(x.topic));
+            })
+            .catch(err => console.log(err));
     };
 
     handleInputChange = event => {
@@ -34,15 +42,11 @@ export class Profile extends Component {
         });
     };
 
-    getArticles = () => {
-        console.log("I Understand How React Works")
-    };
-
-    searchArticles = event => {
+    searchArticles = (event, topic) => {
         event.preventDefault();
-        if (this.state.query) {
-            news.get(this.state.query)
-                .then(results => this.addTopic(results))
+        if (topic) {
+            news.get(topic)
+                .then(results => this.addTopic(this.state.query, results))
                 .catch(err => console.log(err));
         }
     };
@@ -51,9 +55,9 @@ export class Profile extends Component {
 
     };
 
-    addTopic = (apiRes) => {
+    addTopic = (topic, apiRes) => {
         const newEntry = {
-            topic: this.state.query,
+            topic: topic,
             articles: apiRes.data.articles
         }
         console.log(apiRes.data.articles);
@@ -99,7 +103,7 @@ export class Profile extends Component {
                     <ArticleSearch
                         onchange={this.handleInputChange}
                     >
-                        <SearchBtn onClick={this.searchArticles} />
+                        <SearchBtn onClick={() => this.searchArticles(this.state.query)} />
                     </ArticleSearch>
 
                     <TopicList>

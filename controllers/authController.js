@@ -8,7 +8,7 @@ module.exports = {
                     username: req.params.username
                 }
             })
-            .then(data => res.json(data))
+            .then(dbUser => res.json(dbUser))
             .catch(err => res.status(422).json(err));
     },
     addUser: (req, res) => {
@@ -17,7 +17,7 @@ module.exports = {
                 username: req.body.username,
                 password: req.body.password
             })
-            .then(data => res.send(true))
+            .then(dbUser => res.send(true))
             .catch(err => res.status(422).json(err));
     }
 }
