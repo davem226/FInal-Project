@@ -9,5 +9,8 @@ export default {
     },
     getTopics: (uid) => {
         return axios.get("/api/topic/" + uid);
+    },
+    saveTopic: ({ topic, uid }) => {
+        return axios.post("/api/topic", { topic, uid });
     }
 }

@@ -23,7 +23,8 @@ export class Profile extends Component {
 
     componentDidMount() {
         const uid = document.getElementById("root").getAttribute("uid");
-        if (uid) {this.getArticles(uid)}
+        if (uid) { this.getArticles(uid) };
+        this.setState({uid: uid});
     };
 
     getArticles = (uid) => {
@@ -44,16 +45,23 @@ export class Profile extends Component {
     searchArticles = (event, savedTopic) => {
         event.preventDefault();
         const topic = savedTopic ? savedTopic : this.state.query;
-        console.log(topic);
         if (topic) {
             news.get(topic)
-                .then(results => this.addTopic(this.state.query, results))
+                .then(results => {
+                    this.saveTopic({
+                        uid: this.state.uid,
+                        topic: this.state.query
+                    });
+                    this.addTopic(this.state.query, results);
+                })
                 .catch(err => console.log(err));
         }
     };
 
-    saveTopic = () => {
-
+    saveTopic = ({ topic, uid }) => {
+        API.saveTopic({topic, uid})
+            .then(res => console.log("topic saved"))
+            .catch(err => console.log(err));
     };
 
     addTopic = (topic, apiRes) => {
@@ -61,7 +69,6 @@ export class Profile extends Component {
             topic: topic,
             articles: apiRes.data.articles
         }
-        console.log(apiRes.data.articles);
         this.setState((state) => {
             return {
                 contents: state.contents.concat(newEntry),
@@ -92,7 +99,6 @@ export class Profile extends Component {
     };
 
     render() {
-        console.log(this.state.uid);
         return (
             <Container id="profile">
                 <TopicContainer>
