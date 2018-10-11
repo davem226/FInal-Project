@@ -9,7 +9,6 @@ import Topic from "../../components/Topic";
 import Article from "../../components/Article";
 import news from "../../utils/news";
 import API from "../../utils/api";
-import manip from "../../utils/manip";
 import "./Profile.css";
 
 export class Profile extends Component {
@@ -23,6 +22,7 @@ export class Profile extends Component {
     };
 
     componentDidMount() {
+        // Save uid in state for use in db calls
         const uid = document.getElementById("root").getAttribute("uid");
         if (uid) {
             this.getArticles(uid);
@@ -94,8 +94,6 @@ export class Profile extends Component {
     };
 
     saveChoice = (choice, uid, article, articleID) => {
-        const title = manip.escapeQuotes(article.title);
-        console.log(title);
         API.saveArticle({
             source: article.source.name,
             title: article.title,

@@ -14,10 +14,10 @@
 }
 .sun {
     height: 65%;
-    width: 9%;
+    width: 5%;
 
     position: absolute;
-    left: 44%;
+    left: 47%;
     bottom: -25%;
 
     background-color: rgb(254, 250, 41);

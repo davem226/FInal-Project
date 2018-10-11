@@ -15,5 +15,8 @@ export default {
     },
     saveArticle: (articleData) => {
         return axios.post("/api/articles/", articleData);
+    },
+    getArticles: (uid) => {
+        return axios.get("api/articles/" + uid);
     }
 }

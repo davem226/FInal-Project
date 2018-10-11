@@ -19,7 +19,7 @@ const Article = sequelize.define("articles", {
         allowNull: false
     },
     choice: {
-        type: Sequelize.BOOLEAN,
+        type: Sequelize.STRING,
         allowNull: false
     }
 });

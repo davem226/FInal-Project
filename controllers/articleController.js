@@ -12,5 +12,11 @@ module.exports = {
             })
             .then(dbArticle => res.json(dbArticle))
             .catch(err => res.status(422).json(err));
+    },
+    getArticles: (req, res) => {
+        db.Article
+            .findAll({ where: { uid: req.params.uid } })
+            .then(dbArticle => res.json(dbArticle))
+            .catch(err => res.status(422).json(err));
     }
 }
