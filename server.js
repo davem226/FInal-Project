@@ -19,6 +19,7 @@ app.use(routes);
 // Sync with models
 db.User.sync();
 db.Topic.sync();
+db.Article.sync();
 
 // Start the API server
 app.listen(PORT, () => {

@@ -14,17 +14,21 @@
     left: 0%;
     top: 0%;
 
-    /* background-color: rgba(135, 206, 235, .9); */
-    background-color: rgba(135, 206, 250, .9);
+    background-color: rgba(255, 255, 255, .9);
 }
-div#topic > .logo {
-    top: 2%;
+div#topic.container > .logo {
+    width: 196%;
+    height: 4.5%;
+
+    position: absolute;
+    top: 2.5%;
+    left: -49%;
 }
 #enter.message {
     width: 90%;
 
     position: absolute;
-    top: 9%;
+    top: 10%;
     left: 5%;
 
     font-size: 1.3rem;
@@ -66,8 +70,9 @@ form#article-search > input {
     left: 60%;
     top: 7%;
 
-    background-color: goldenrod;
-    color: royalblue;
+    /* background-color: rgb(255, 253, 158); */
+    background-color: rgb(253, 149, 2);
+    color: white;
 }
 #topic-list.container {
     width: 80%;
@@ -82,8 +87,8 @@ form#article-search > input {
     height: 15%;
     width: 100%;
 
-    background-color: salmon;
-    color: white;
+    background-color: royalblue;
+    color: ghostwhite;
 
     text-align: center;
     font-family: Arial, Helvetica, sans-serif;
@@ -104,8 +109,6 @@ form#article-search > input {
     top: 0%;
 
     background-color: rgba(211, 211, 211, .7);
-    /* background-color: rgba(218, 165, 32, .4); */
-    /* background-color: rgba(250, 128, 114, .4); */
 }
 .article {
     width: 96%;
@@ -149,13 +152,14 @@ div.article > div.source {
     position: relative;
     top: -42px;
 
-    font-size: 28px;
-    font-family: 'Times New Roman', Times, serif;
+    font-size: 24px;
+    font-family: 'Roboto Mono', monospace;
     padding-left: 5px;
     padding-right: 5px;
 
     background-color: ghostwhite;
-    color: salmon;
+    color: royalblue;
+    /* color: rgb(118, 193, 255); */
 }
 div.article > p {
     position: relative;
@@ -197,6 +201,11 @@ span.is-liked > button {
 }
 #logout {
     position: absolute;
-    top: 0%;
-    right: 0%;
+    top: 1%;
+    right: 1%;
+
+    font-family: 'Roboto Mono', monospace;
+
+    background-color: rgb(118, 193, 255);
+    color: ghostwhite;
 }

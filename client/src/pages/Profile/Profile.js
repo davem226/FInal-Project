@@ -9,6 +9,7 @@ import Topic from "../../components/Topic";
 import Article from "../../components/Article";
 import news from "../../utils/news";
 import API from "../../utils/api";
+import manip from "../../utils/manip";
 import "./Profile.css";
 
 export class Profile extends Component {
@@ -93,8 +94,8 @@ export class Profile extends Component {
     };
 
     saveChoice = (choice, uid, article, articleID) => {
-        // Save article info, the response, and uid to articles table
-        // code goes here...
+        const title = manip.escapeQuotes(article.title);
+        console.log(title);
         API.saveArticle({
             source: article.source.name,
             title: article.title,
