@@ -92,10 +92,22 @@ export class Profile extends Component {
         });
     };
 
-    saveChoice = (id) => {
+    saveChoice = (choice, uid, article, articleID) => {
+        // Save article info, the response, and uid to articles table
+        // code goes here...
+        API.saveArticle({
+            source: article.source.name,
+            title: article.title,
+            preview: article.description,
+            uid: uid,
+            choice: choice
+        })
+            .then(res => null)
+            .catch(err => console.log(err));
+
         this.setState(state => {
             return {
-                toBeRated: state.toBeRated.filter(i => i !== id)
+                toBeRated: state.toBeRated.filter(i => i !== articleID)
             }
         });
     };
@@ -138,7 +150,10 @@ export class Profile extends Component {
                                     onclick={() => this.showIsLiked(i)}
                                 >
                                     {this.state.toBeRated.includes(i) ? (
-                                        <IsLiked onClick={() => this.saveChoice(i)} />
+                                        <IsLiked
+                                            onYesClick={() => this.saveChoice("yes", this.state.uid, article, i)}
+                                            onNoClick={() => this.saveChoice("no", this.state.uid, article, i)}
+                                        />
                                     ) : ("")}
                                 </Article>
                             ))
