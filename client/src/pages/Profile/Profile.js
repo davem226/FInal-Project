@@ -9,6 +9,8 @@ import Topic from "../../components/Topic";
 import Article from "../../components/Article";
 import news from "../../utils/news";
 import API from "../../utils/api";
+// import LogReg from "../../utils/logreg";
+import ManipData from "../../utils/manipData";
 import "./Profile.css";
 
 export class Profile extends Component {
@@ -28,9 +30,13 @@ export class Profile extends Component {
             this.getArticles(uid);
             this.setState({ uid: uid });
         }
+        // Fit logistic regression model
+        const dataToAnalyze = new ManipData;
+        const data = dataToAnalyze.getData(uid);
+        console.log(data);
     };
 
-    getArticles = (uid) => {
+    getArticles = uid => {
         API.getTopics(uid)
             .then(res => {
                 res.data.map(x => this.searchArticles(x.topic));
