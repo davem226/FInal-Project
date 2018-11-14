@@ -14,9 +14,14 @@ export default class LogReg {
         const sentimentTitle = this.sentimentAnalysis(data, "title");
         const sentimentPreview = this.sentimentAnalysis(data, "preview");
 
+        // Get dummy coded categorical data with user's choice
+        const dummySource = this.dummyCode(data, "source");
+
+        // Concatenate data
         
     };
-    sentimentAnalysis = (data, column) =>{
+    // Outputs array of objects with sentiments scores
+    sentimentAnalysis = (data, column) => {
         const documents = data.map(row => {
             return { language: "en", id: row.id, text: row[column] };
         });
@@ -24,30 +29,23 @@ export default class LogReg {
             .then(results => results.documents)
             .catch(err => console.log(err));
     };
-    dummyCode = (data) => {
-        const processedData = [];
-        const categories = this.uniq(data, "source");
-        data.map(row=>{
-            categories.map(cat=>{
-                row[`source_${cat}`] = row.source===cat?1:0;
-            });
-        });
-        for (let row of data) {
-            const datum = {};
-            datum.choice = row.choice === "yes" ? 1 : 0;
-            for (let i in dummyCols) {
-                datum[`source_${dummyCols[i]}`] = row.source === dummyCols[i] ? 1 : 0;
-            }
-            // console.log(datum);
-            processedData.push(datum);
-        }
-        console.log(processedData);
-        return processedData;
+    // Outputs array of objects with dummy coded categorical variables
+    dummyCode = (data, column) => {
+        const categories = this.uniq(data, column);
+        return (
+            data.map(row => {
+                const dummyData = { id: row.id, choice: row.choice === "yes" ? 1 : 0 };
+                categories.map(cat => {
+                    dummyData[`${column}_${cat}`] = row.source === cat ? 1 : 0;
+                });
+                return dummyData;
+            })
+        );
     };
+    // Outputs array of unique categories of a categorical variable
     uniq = (data, columnToDummy) => {
-    // Try to refactor using .map().filter()
+        // Try to refactor using .map().filter()
         let uniqCats = [];
-        // Create array of unique categories in a categorical data column
         for (let row of data) {
             if (!dummyCols.includes(row[columnToDummy])) {
                 uniqCats.push(row[columnToDummy]);
