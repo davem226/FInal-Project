@@ -14,11 +14,20 @@ export default class LogReg {
         const sentimentTitle = this.sentimentAnalysis(data, "title");
         const sentimentPreview = this.sentimentAnalysis(data, "preview");
 
-        // Get dummy coded categorical data with user's choice
+        // Dummy code categorical data
         const dummySource = this.dummyCode(data, "source");
 
         // Concatenate data
-        
+        return (
+            data.map(row=>{
+                return {
+                    choice: row.choice === "yes" ? 1 : 0,
+                    sentimentTitle: sentimentTitle.find(obj=>obj.id===row.id).score,
+                    sentimentPreview: sentimentPreview.find(obj=>obj.id===row.id).score,
+                    ...dummySource.find(obj=>obj.id===row.id)
+                };
+            })
+        );
     };
     // Outputs array of objects with sentiments scores
     sentimentAnalysis = (data, column) => {
@@ -34,7 +43,7 @@ export default class LogReg {
         const categories = this.uniq(data, column);
         return (
             data.map(row => {
-                const dummyData = { id: row.id, choice: row.choice === "yes" ? 1 : 0 };
+                const dummyData = { id: row.id };
                 categories.map(cat => {
                     dummyData[`${column}_${cat}`] = row.source === cat ? 1 : 0;
                 });
