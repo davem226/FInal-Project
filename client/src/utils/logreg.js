@@ -29,7 +29,7 @@ export default class LogReg {
             })
         );
     };
-    // Outputs array of objects with sentiments scores
+    // Outputs array of objects with sentiment scores
     sentimentAnalysis = (data, column) => {
         const documents = data.map(row => {
             return { language: "en", id: row.id, text: row[column] };
@@ -40,7 +40,7 @@ export default class LogReg {
     };
     // Outputs array of objects with dummy coded categorical variables
     dummyCode = (data, column) => {
-        const categories = this.uniq(data, column);
+        const categories = data.filter((row,i)=>data.indexOf(row[column])===i);
         return (
             data.map(row => {
                 const dummyData = { id: row.id };
@@ -51,15 +51,4 @@ export default class LogReg {
             })
         );
     };
-    // Outputs array of unique categories of a categorical variable
-    uniq = (data, columnToDummy) => {
-        // Try to refactor using .map().filter()
-        let uniqCats = [];
-        for (let row of data) {
-            if (!dummyCols.includes(row[columnToDummy])) {
-                uniqCats.push(row[columnToDummy]);
-            }
-        }
-        return uniqCats;
-    }
 }
