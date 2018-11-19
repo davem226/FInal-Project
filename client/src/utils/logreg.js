@@ -1,12 +1,24 @@
 import API from "./api";
 
 export default class LogReg {
-    // Get articles data from db
+    // Get articles data from db for specific user
     getData = uid => {
         API.getArticles(uid)
             .then(res => {
                 return this.processData(res.data);
             }).catch(err => console.log(err));
+    };
+    // Estimate parameter values of logistic regression model
+    fit = (data,η) => {
+        // Define sigma function
+        const σ = z => 1/(1+Math.exp(-z));
+        // Initialize parameters to zero
+        let θ = Object.keys(data[0]).filter(col=>col!=="choice").map(col=>0);
+        data.map(row=>{
+            const x = Object.keys(row).filter(col=>col!=="choice").map(col=>row[col]);
+            const z = x.map((val,i)=>val*θ[i]);
+            const partial = 
+        })
     };
     // Make data analyzable
     processData = data => {
@@ -18,6 +30,7 @@ export default class LogReg {
         const dummySource = this.dummyCode(data, "source");
 
         // Concatenate data
+        // Might have to async-await this with the sentimentAnalysis calls
         return (
             data.map(row=>{
                 return {
@@ -45,7 +58,7 @@ export default class LogReg {
             data.map(row => {
                 const dummyData = { id: row.id };
                 categories.map(cat => {
-                    dummyData[`${column}_${cat}`] = row.source === cat ? 1 : 0;
+                    dummyData[`${column}_${cat}`] = row[column] === cat ? 1 : 0;
                 });
                 return dummyData;
             })
