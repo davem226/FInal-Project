@@ -16,7 +16,7 @@ export default class LogReg {
         let θ = [0, ...Object.keys(data[0]).filter(col => col !== "choice").map(col => 0)];
         // Repeat many times
         while (repeat) {
-            const gradients = θ.slice();
+            const gradients = [0, ...Object.keys(data[0]).filter(col => col !== "choice").map(col => 0)];
             data.map(row => {
                 // The intercept x-value is set to 1
                 const x = [1, ...Object.keys(row).filter(col => col !== "choice").map(col => row[col])];
