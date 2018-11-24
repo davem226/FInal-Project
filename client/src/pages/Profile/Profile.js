@@ -9,8 +9,7 @@ import Topic from "../../components/Topic";
 import Article from "../../components/Article";
 import news from "../../utils/news";
 import API from "../../utils/api";
-// import LogReg from "../../utils/logreg";
-import ManipData from "../../utils/manipData";
+import LogReg from "../../utils/LogReg";
 import "./Profile.css";
 
 export class Profile extends Component {
@@ -20,9 +19,12 @@ export class Profile extends Component {
         query: "",
         contents: [],
         topicShown: "",
-        toBeRated: []
+        toBeRated: [],
+        analysis: {
+            θ: [],
+            X: []
+        }
     };
-
     componentDidMount() {
         // Save uid in state for use in db calls
         const uid = document.getElementById("root").getAttribute("uid");
@@ -31,49 +33,52 @@ export class Profile extends Component {
             this.setState({ uid: uid });
         }
         // Fit logistic regression model
-        const dataToAnalyze = new ManipData;
-        const data = dataToAnalyze.getData(uid);
+        const LR = new LogReg;
+        const reviewedArticles = LR.getData(uid);
         console.log(data);
+        this.setState({ analysis: { θ: LR.fit(reviewedArticles, 1000) } });
     };
-
     getArticles = uid => {
-        API.getTopics(uid)
-            .then(res => {
-                res.data.map(x => this.searchArticles(x.topic));
-            })
-            .catch(err => console.log(err));
+        API.getTopics(uid).then(res => {
+            res.data.map(x => this.searchArticles(x.topic))
+        }).catch(err => console.log(err));
     };
-
     handleInputChange = event => {
         const { name, value } = event.target;
         this.setState({
             [name]: value
         });
     };
-
     searchArticles = topic => {
         if (topic) {
-            news.get(topic)
-                .then(results => {
-                    if (this.state.query) {
-                        this.saveTopic({
-                            uid: this.state.uid,
-                            topic: this.state.query
-                        });
-                    }
-                    this.showTopic(topic, results);
-                })
-                .catch(err => console.log(err));
+            news.get(topic).then(results => {
+                if (this.state.query) {
+                    this.saveTopic({
+                        uid: this.state.uid,
+                        topic: this.state.query
+                    });
+                }
+                const LR = new LogReg;
+                
+                this.showContent(topic, results);
+            }).catch(err => console.log(err));
         }
     };
-
+    // Outputs array of objects with sentiment scores
+    sentimentAnalysis = (data, column) => {
+        const documents = data.map(row => {
+            return { language: "en", id: row.id, text: row[column] };
+        });
+        API.sentiment({ documents })
+            .then(results => results.documents)
+            .catch(err => console.log(err));
+    };
     saveTopic = ({ topic, uid }) => {
         API.saveTopic({ topic, uid })
             .then(res => null)
             .catch(err => console.log(err));
     };
-
-    showTopic = (topic, apiRes) => {
+    showContent = (topic, apiRes) => {
         const newEntry = {
             topic: topic,
             articles: apiRes.data.articles
@@ -86,11 +91,9 @@ export class Profile extends Component {
         });
         document.getElementById("article-search").reset();
     };
-
     showArticles = (topic) => {
         this.setState({ topicShown: topic });
     };
-
     showIsLiked = (id) => {
         this.setState(state => {
             return {
@@ -98,7 +101,6 @@ export class Profile extends Component {
             }
         });
     };
-
     saveChoice = (choice, uid, article, articleID) => {
         API.saveArticle({
             source: article.source.name,

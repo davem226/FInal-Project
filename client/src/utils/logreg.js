@@ -64,15 +64,6 @@ export default class LogReg {
             })
         );
     };
-    // Outputs array of objects with sentiment scores
-    sentimentAnalysis = (data, column) => {
-        const documents = data.map(row => {
-            return { language: "en", id: row.id, text: row[column] };
-        });
-        API.sentiment({ documents })
-            .then(results => results.documents)
-            .catch(err => console.log(err));
-    };
     // Outputs array of objects with dummy coded categorical variables
     dummyCode = (data, column) => {
         const categories = data.filter((row, i) => data.indexOf(row[column]) === i);
