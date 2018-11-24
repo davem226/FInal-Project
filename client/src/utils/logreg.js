@@ -8,6 +8,15 @@ export default class LogReg {
                 return this.processData(res.data);
             }).catch(err => console.log(err));
     };
+    // Make prediction
+    predict = (θ, row, cutoff) => {
+        const x = [1, ...Object.keys(row).filter(col => col !== "choice").map(col => row[col])];
+        const z = x.reduce((acc, val, i) => acc + val * θ[i]);
+        const σ = z => 1 / (1 + Math.exp(-z));
+        // P is probability of positive response (i.e. y=1)
+        const P = σ(z);
+        return P > cutoff ? 1 : 0;
+    };
     // Estimate parameter values of logistic regression model
     fit = (data, repeat) => {
         const σ = z => 1 / (1 + Math.exp(-z));
@@ -17,14 +26,17 @@ export default class LogReg {
         // Repeat many times
         while (repeat) {
             const gradients = [0, ...Object.keys(data[0]).filter(col => col !== "choice").map(col => 0)];
+            // Calculate gradients by summing values over each data point
             data.map(row => {
                 // The intercept x-value is set to 1
                 const x = [1, ...Object.keys(row).filter(col => col !== "choice").map(col => row[col])];
                 const z = x.reduce((acc, val, i) => acc + val * θ[i]);
+                // Update the gradient of each parameter using the current data point
                 gradients.map((grad, i) => {
                     gradients[i] = grad + (row.choice - σ(z)) * x[i];
-                })
-            })
+                });
+            });
+            // Update parameters after gradients are calculated
             θ = θ.map((x, i) => x + η * gradients[i]);
             repeat--;
         }
