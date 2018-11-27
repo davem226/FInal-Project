@@ -22,7 +22,7 @@ export default class LogReg {
         const σ = z => 1 / (1 + Math.exp(-z));
         const η = 0.05;
         // Initialize parameters to zero, including intercept
-        let θ = [0, ...Object.keys(data[0]).filter(col => col !== "choice").map(col => 0)];
+        let θ = [{ intercept: 0 }, ...Object.keys(data[0]).filter(col => col !== "choice").map(col => { return { [col]: 0 } })];
         // Repeat many times
         while (repeat) {
             const gradients = [0, ...Object.keys(data[0]).filter(col => col !== "choice").map(col => 0)];

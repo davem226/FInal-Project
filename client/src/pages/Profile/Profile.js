@@ -59,7 +59,7 @@ export class Profile extends Component {
                     });
                 }
                 const LR = new LogReg;
-                
+
                 this.showContent(topic, results);
             }).catch(err => console.log(err));
         }
@@ -81,7 +81,15 @@ export class Profile extends Component {
     showContent = (topic, apiRes) => {
         const newEntry = {
             topic: topic,
-            articles: apiRes.data.articles
+            articles: apiRes.data.articles.map((article, i) => {
+                return {
+                    id: i,
+                    source: article.source.name,
+                    link: article.url,
+                    title: article.title,
+                    preview: article.description
+                }
+            })
         }
         this.setState((state) => {
             return {
