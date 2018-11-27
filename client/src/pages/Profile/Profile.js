@@ -58,16 +58,20 @@ export class Profile extends Component {
                         topic: this.state.query
                     });
                 }
+                // Predict whether user will like each article
                 const LR = new LogReg;
-
+                // Should only have to map through the results once
+                const sentimentTitle = this.sentimentAnalysis(results.data.articles, "title");
+                const sentimentPreview = this.sentimentAnalysis(results.data.articles, "description");
+        
                 this.showContent(topic, results);
             }).catch(err => console.log(err));
         }
     };
     // Outputs array of objects with sentiment scores
     sentimentAnalysis = (data, column) => {
-        const documents = data.map(row => {
-            return { language: "en", id: row.id, text: row[column] };
+        const documents = data.map((x, i) => {
+            return { language: "en", id: i, text: x[column] };
         });
         API.sentiment({ documents })
             .then(results => results.documents)
