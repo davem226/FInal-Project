@@ -17,6 +17,7 @@ export class Profile extends Component {
         uid: "",
         isAuthenticated: false,
         query: "",
+        haveArticles: false,
         contents: [],
         topicShown: "",
         toBeRated: [],
@@ -40,14 +41,19 @@ export class Profile extends Component {
     };
     getArticles = uid => {
         API.getTopics(uid).then(res => {
-            res.data.map(x => this.searchArticles(x.topic))
+            const contents = res.data.map(x => this.searchArticles(x.topic));
+            const sentiments = this.sentimentAnalysis(contents);
+            const filteredContents = this.filterArticles(sentiments);
+            this.setState({
+                contents: filteredContents,
+                haveArticles: true,
+                query: ""
+            });
         }).catch(err => console.log(err));
     };
-    handleInputChange = event => {
-        const { name, value } = event.target;
-        this.setState({
-            [name]: value
-        });
+    filterArticles = sentiments => {
+        // Predict whether user will like each article
+        const LR = new LogReg;
     };
     searchArticles = topic => {
         if (topic) {
@@ -57,21 +63,21 @@ export class Profile extends Component {
                         uid: this.state.uid,
                         topic: this.state.query
                     });
+                    document.getElementById("article-search").reset();
                 }
-                // Predict whether user will like each article
-                const LR = new LogReg;
-                // Should only have to map through the results once
-                const sentimentTitle = this.sentimentAnalysis(results.data.articles, "title");
-                const sentimentPreview = this.sentimentAnalysis(results.data.articles, "description");
-        
-                this.showContent(topic, results);
+                return this.showContent(topic, results);
             }).catch(err => console.log(err));
         }
     };
     // Outputs array of objects with sentiment scores
-    sentimentAnalysis = (data, column) => {
-        const documents = data.map((x, i) => {
-            return { language: "en", id: i, text: x[column] };
+    sentimentAnalysis = (contents) => {
+        // Concatenate all titles and previews into one array
+        const documents = [];
+        contents.map(topic => {
+            topic.articles.map((article, i) => {
+                documents.push({ language: "en", id: `${topic.topic}-${i}-title`, text: article.title });
+                documents.push({ language: "en", id: `${topic.topic}-${i}-preview`, text: article.preview });
+            });
         });
         API.sentiment({ documents })
             .then(results => results.documents)
@@ -83,7 +89,7 @@ export class Profile extends Component {
             .catch(err => console.log(err));
     };
     showContent = (topic, apiRes) => {
-        const newEntry = {
+        return {
             topic: topic,
             articles: apiRes.data.articles.map((article, i) => {
                 return {
@@ -94,14 +100,7 @@ export class Profile extends Component {
                     preview: article.description
                 }
             })
-        }
-        this.setState((state) => {
-            return {
-                contents: state.contents.concat(newEntry),
-                query: ""
-            }
-        });
-        document.getElementById("article-search").reset();
+        };
     };
     showArticles = (topic) => {
         this.setState({ topicShown: topic });
@@ -128,6 +127,12 @@ export class Profile extends Component {
             return {
                 toBeRated: state.toBeRated.filter(i => i !== articleID)
             }
+        });
+    };
+    handleInputChange = event => {
+        const { name, value } = event.target;
+        this.setState({
+            [name]: value
         });
     };
 
