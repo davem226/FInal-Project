@@ -20,10 +20,12 @@ export class Profile extends Component {
         contents: [],
         topicShown: "",
         toBeRated: [],
+        θ: []
     };
     componentDidMount() {
         // Ensure user is logged in
         const uid = document.getElementById("root").getAttribute("uid");
+        this.setState({ uid: uid });
         if (!uid) break;
         this.showSavedArticles(uid);
     };
@@ -32,14 +34,14 @@ export class Profile extends Component {
         const θ = this.estimateParameters(uid);
         if (!θ) return null;
 
-        // Array of articles for each topic
+        // Array of articles JSON for each topic
         const contents = this.getContents(uid);
         if (!contents) return null;
 
         // Keep only the articles the user is predicted to like
         const filteredContents = this.filterArticles(θ, contents);
-        // Render articles in DOM
-        this.setState({ contents: filteredContents });
+        // Render articles in DOM; Save θ for use if user add new topic during session
+        this.setState({ contents: filteredContents, θ: θ });
     };
     async estimateParameters(uid) {
         const LR = new LogReg;
@@ -61,7 +63,6 @@ export class Profile extends Component {
         const sentiments = this.sentimentAnalysis(contents);
         // Map through each article of each topic and predict if user will like it
         return contents.map(content => {
-            // Look up syntax of Object.assign()
             const filteredArticles = content.articles.map(article => {
                 // "Add" sentiment scores to each article so LR.predict can run on it 
                 const updatedArticle = Object.assign({}, article, {
@@ -71,9 +72,10 @@ export class Profile extends Component {
                 });
                 const LR = new LogReg;
                 return LR.predict(θ, updatedArticle, 0.5) ? updatedArticle : null;
+                // Filter out articles user predicted to not like
             }).filter(article => article);
 
-            // "Update" articles of content object
+            // "Update" each contents object
             return Object.assign({}, content, {
                 ...content,
                 articles: filteredArticles
@@ -109,27 +111,24 @@ export class Profile extends Component {
             };
         });
     };
+    async searchArticles(topic) {
+        if (!topic) return null;
+        this.saveTopic({ topic: topic, uid: this.state.uid });
+        let articleJSON = await news.get(topic);
+        const content = this.parseArticleJSON([topic], articleJSON);
+        let filteredContent = this.filterArticles(this.state.θ, [content]);
 
-// Below needs refactoring
-    searchArticles = topic => {
-        if (topic) {
-            news.get(topic).then(results => {
-                if (this.state.query) {
-                    this.saveTopic({
-                        uid: this.state.uid,
-                        topic: this.state.query
-                    });
-                    document.getElementById("article-search").reset();
-                }
-                return this.showContent(topic, results);
-            }).catch(err => console.log(err));
-        }
+        // Update state
+        this.setState(state => { return { contents: [...state.contents, filteredContent] } });
+        document.getElementById("article-search").reset();
     };
     saveTopic = ({ topic, uid }) => {
         API.saveTopic({ topic, uid })
             .then(res => null)
             .catch(err => console.log(err));
     };
+
+    // Below needs refactoring
     showContent = (topic, apiRes) => {
         return {
             topic: topic,
