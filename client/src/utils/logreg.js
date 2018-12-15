@@ -1,16 +1,22 @@
-import API from "./api";
-
 export default class LogReg {
-    // Get articles data from db for specific user
-    getData = uid => {
-        API.getArticles(uid)
-            .then(res => {
-                return this.processData(res.data);
-            }).catch(err => console.log(err));
-    };
     // Make prediction
-    predict = (θ, row, cutoff) => {
-        const x = [1, ...Object.keys(row).filter(col => col !== "choice").map(col => row[col])];
+    predict = (θ, article, cutoff) => {
+        // Construct X array
+        const X = θ.map(t => {
+            const key = Object.keys(t)[0];
+            if (key === "intercept") return { key: 1 };
+            // Return value of all non dummy-coded columns (except the intercept of course)
+            else if (article[key]) return { key: article[key] };
+            // Return 1 for matching dummy-coded column
+            else if (key.split("_")[1] === article.source) return { key: 1 };
+            // Return 0 for all unmatched dummy-coded columns
+            else return { key: 0 }
+        });
+
+        // Make prediction
+        // Compute z based on shared properties of X and θ, NOT by assuming shared order of values
+
+
         const z = x.reduce((acc, val, i) => acc + val * θ[i]);
         const σ = z => 1 / (1 + Math.exp(-z));
         // P is probability of positive response (i.e. y=1)
@@ -37,44 +43,34 @@ export default class LogReg {
                 });
             });
             // Update parameters after gradients are calculated
-            θ = θ.map((x, i) => x + η * gradients[i]);
+            θ = θ.map((obj, i) => { return { [Object.keys(obj)[0]]: Object.values(obj)[0] + η * gradients[i] } });
             repeat--;
         }
         return θ;
     };
     // Make data analyzable
     processData = data => {
-        // Run sentiment analyses (Microsoft Azure)
-        const sentimentTitle = this.sentimentAnalysis(data, "title");
-        const sentimentPreview = this.sentimentAnalysis(data, "preview");
-
         // Dummy code categorical data
         const dummySource = this.dummyCode(data, "source");
-
         // Concatenate data
-        // Might have to async-await this with the sentimentAnalysis calls
-        return (
-            data.map(row => {
-                return {
-                    choice: row.choice === "yes" ? 1 : 0,
-                    sentimentTitle: sentimentTitle.find(obj => obj.id === row.id).score,
-                    sentimentPreview: sentimentPreview.find(obj => obj.id === row.id).score,
-                    ...dummySource.find(obj => obj.id === row.id)
-                };
-            })
-        );
+        return data.map(row => {
+            return {
+                choice: row.choice === "yes" ? 1 : 0,
+                sentimentTitle: row.sentimentTitle,
+                sentimentPreview: row.sentimentPreview,
+                ...dummySource.find(obj => obj.id === row.id)
+            };
+        })
     };
     // Outputs array of objects with dummy coded categorical variables
     dummyCode = (data, column) => {
         const categories = data.filter((row, i) => data.indexOf(row[column]) === i);
-        return (
-            data.map(row => {
-                const dummyData = { id: row.id };
-                categories.map(cat => {
-                    dummyData[`${column}_${cat}`] = row[column] === cat ? 1 : 0;
-                });
-                return dummyData;
-            })
-        );
+        return data.map(row => {
+            const dummyData = { id: row.id };
+            categories.map(cat => {
+                dummyData[`${column}_${cat}`] = row[column] === cat ? 1 : 0;
+            });
+            return dummyData;
+        })
     };
 }

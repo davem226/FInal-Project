@@ -17,44 +17,100 @@ export class Profile extends Component {
         uid: "",
         isAuthenticated: false,
         query: "",
-        haveArticles: false,
         contents: [],
         topicShown: "",
         toBeRated: [],
-        analysis: {
-            θ: [],
-            X: []
-        }
     };
     componentDidMount() {
-        // Save uid in state for use in db calls
+        // Ensure user is logged in
         const uid = document.getElementById("root").getAttribute("uid");
-        if (uid) {
-            this.getArticles(uid);
-            this.setState({ uid: uid });
-        }
-        // Fit logistic regression model
-        const LR = new LogReg;
-        const reviewedArticles = LR.getData(uid);
-        console.log(data);
-        this.setState({ analysis: { θ: LR.fit(reviewedArticles, 1000) } });
+        if (!uid) break;
+        this.showSavedArticles(uid);
     };
-    getArticles = uid => {
-        API.getTopics(uid).then(res => {
-            const contents = res.data.map(x => this.searchArticles(x.topic));
-            const sentiments = this.sentimentAnalysis(contents);
-            const filteredContents = this.filterArticles(sentiments);
-            this.setState({
-                contents: filteredContents,
-                haveArticles: true,
-                query: ""
+    showSavedArticles(uid) {
+        // Array of parameters specific to user
+        const θ = this.estimateParameters(uid);
+        if (!θ) return null;
+
+        // Array of articles for each topic
+        const contents = this.getContents(uid);
+        if (!contents) return null;
+
+        // Keep only the articles the user is predicted to like
+        const filteredContents = this.filterArticles(θ, contents);
+        // Render articles in DOM
+        this.setState({ contents: filteredContents });
+    };
+    async estimateParameters(uid) {
+        const LR = new LogReg;
+        let reviewedArticles = await API.getArticles(uid);
+        if (reviewedArticles.length === 0) return null;
+        const analyzableData = LR.processData(reviewedArticles);
+        return LR.fit(analyzableData, 1000);
+    };
+    async getContents(uid) {
+        let savedTopics = await API.getTopics(uid);
+        if (savedTopics.length === 0) return null;
+        let newsAPIresults = savedTopics.map(topic => {
+            let articleJSON = await news.get(topic);
+            return articleJSON;
+        });
+        return this.parseArticleJSON(savedTopics, newsAPIresults);
+    };
+    filterArticles = (θ, contents) => {
+        const sentiments = this.sentimentAnalysis(contents);
+        // Map through each article of each topic and predict if user will like it
+        return contents.map(content => {
+            // Look up syntax of Object.assign()
+            const filteredArticles = content.articles.map(article => {
+                // "Add" sentiment scores to each article so LR.predict can run on it 
+                const updatedArticle = Object.assign({}, article, {
+                    ...article,
+                    sentimentTitle: sentiments.find(entry => entry.id === `${content.topic}-${article.id}-title`).score,
+                    sentimentPreview: sentiments.find(entry => entry.id === `${content.topic}-${article.id}-preview`).score,
+                });
+                const LR = new LogReg;
+                return LR.predict(θ, updatedArticle, 0.5) ? updatedArticle : null;
+            }).filter(article => article);
+
+            // "Update" articles of content object
+            return Object.assign({}, content, {
+                ...content,
+                articles: filteredArticles
             });
-        }).catch(err => console.log(err));
+        });
     };
-    filterArticles = sentiments => {
-        // Predict whether user will like each article
-        const LR = new LogReg;
+    // Outputs array of objects with sentiment scores
+    async sentimentAnalysis(contents) {
+        // Concatenate all titles and previews into one array
+        const documents = [];
+        contents.map(content => {
+            content.articles.map(article => {
+                documents.push({ language: "en", id: `${content.topic}-${article.id}-title`, text: article.title });
+                documents.push({ language: "en", id: `${content.topic}-${article.id}-preview`, text: article.preview });
+            });
+        });
+        let results = await API.sentiment({ documents });
+        return results.documents;
     };
+    parseArticleJSON = (topics, newsResults) => {
+        return topics.map((topic, i) => {
+            return {
+                topic: topic,
+                articles: newsResults[i].data.articles.map((article, j) => {
+                    return {
+                        id: j,
+                        source: article.source.name,
+                        link: article.url,
+                        title: article.title,
+                        preview: article.description
+                    }
+                })
+            };
+        });
+    };
+
+// Below needs refactoring
     searchArticles = topic => {
         if (topic) {
             news.get(topic).then(results => {
@@ -68,20 +124,6 @@ export class Profile extends Component {
                 return this.showContent(topic, results);
             }).catch(err => console.log(err));
         }
-    };
-    // Outputs array of objects with sentiment scores
-    sentimentAnalysis = (contents) => {
-        // Concatenate all titles and previews into one array
-        const documents = [];
-        contents.map(topic => {
-            topic.articles.map((article, i) => {
-                documents.push({ language: "en", id: `${topic.topic}-${i}-title`, text: article.title });
-                documents.push({ language: "en", id: `${topic.topic}-${i}-preview`, text: article.preview });
-            });
-        });
-        API.sentiment({ documents })
-            .then(results => results.documents)
-            .catch(err => console.log(err));
     };
     saveTopic = ({ topic, uid }) => {
         API.saveTopic({ topic, uid })
