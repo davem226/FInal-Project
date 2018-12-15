@@ -12,12 +12,14 @@ export default class LogReg {
             // Return 0 for all unmatched dummy-coded columns
             else return { key: 0 }
         });
-
         // Make prediction
-        // Compute z based on shared properties of X and θ, NOT by assuming shared order of values
-
-
-        const z = x.reduce((acc, val, i) => acc + val * θ[i]);
+        const z = X.reduce((acc, x) => {
+            const key = Object.keys(x)[0];
+            // Find θ and X values for the same data column
+            const xVal = x[key];
+            const θVal = θ.find(obj => obj[key])[key];
+            return acc + xVal * θVal;
+        });
         const σ = z => 1 / (1 + Math.exp(-z));
         // P is probability of positive response (i.e. y=1)
         const P = σ(z);

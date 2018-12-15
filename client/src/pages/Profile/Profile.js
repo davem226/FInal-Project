@@ -127,22 +127,6 @@ export class Profile extends Component {
             .then(res => null)
             .catch(err => console.log(err));
     };
-
-    // Below needs refactoring
-    showContent = (topic, apiRes) => {
-        return {
-            topic: topic,
-            articles: apiRes.data.articles.map((article, i) => {
-                return {
-                    id: i,
-                    source: article.source.name,
-                    link: article.url,
-                    title: article.title,
-                    preview: article.description
-                }
-            })
-        };
-    };
     showArticles = (topic) => {
         this.setState({ topicShown: topic });
     };
@@ -160,9 +144,7 @@ export class Profile extends Component {
             preview: article.description,
             uid: uid,
             choice: choice
-        })
-            .then(res => null)
-            .catch(err => console.log(err));
+        }).catch(err => console.log(err));
 
         this.setState(state => {
             return {
