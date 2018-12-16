@@ -1,5 +1,4 @@
 export default class LogReg {
-    // Make prediction
     predict = (θ, article, cutoff) => {
         // Construct X array
         const X = θ.map(t => {

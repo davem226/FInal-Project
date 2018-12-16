@@ -92,7 +92,7 @@ export class Profile extends Component {
                 documents.push({ language: "en", id: `${content.topic}-${article.id}-preview`, text: article.preview });
             });
         });
-        let results = await API.sentiment({ documents });
+        let results = await news.sentiment({ documents });
         return results.documents;
     };
     parseArticleJSON = (topics, newsResults) => {

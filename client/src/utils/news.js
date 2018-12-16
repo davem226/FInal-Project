@@ -9,5 +9,12 @@ export default {
 
         const url = `${base}q=${topic}&from=${startDate}&sortBy=${sortMethod}&apiKey=${apikey}`;
         return axios.get(url);
+    },
+    sentiment: ({ documents }) => {
+        const url = "https://eastus.api.cognitive.microsoft.com/text/analytics/v2.0/sentiment";
+        const headers = {
+            "Ocp-Apim-Subscription-Key": "9403072deb864d1591293a7e16df70d1"
+        };
+        return axios.post(url, { documents }, { headers: headers });
     }
 }
