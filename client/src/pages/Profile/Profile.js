@@ -26,41 +26,58 @@ export class Profile extends Component {
         // Ensure user is logged in
         const uid = document.getElementById("root").getAttribute("uid");
         this.setState({ uid: uid });
-        if (!uid) break;
+        if (!uid) return null;
         this.showSavedArticles(uid);
     };
-    showSavedArticles(uid) {
+    async showSavedArticles(uid) {
         // Array of parameters specific to user
-        const θ = this.estimateParameters(uid);
-        if (!θ) return null;
+        let θ = await this.estimateParameters(uid);
 
         // Array of articles JSON for each topic
-        const contents = this.getContents(uid);
-        if (!contents) return null;
+        const contents = await this.getContents(uid);
 
         // Keep only the articles the user is predicted to like
-        const filteredContents = this.filterArticles(θ, contents);
+        const filteredContents = await this.filterArticles(θ, contents);
         // Render articles in DOM; Save θ for use if user add new topic during session
         this.setState({ contents: filteredContents, θ: θ });
     };
     async estimateParameters(uid) {
-        const LR = new LogReg;
-        let reviewedArticles = await API.getArticles(uid);
+        const LR = new LogReg();
+        let results = await API.getArticles(uid);
+        const reviewedArticles = results.data;
         if (reviewedArticles.length === 0) return null;
         const analyzableData = LR.processData(reviewedArticles);
         return LR.fit(analyzableData, 1000);
     };
     async getContents(uid) {
-        let savedTopics = await API.getTopics(uid);
+        let results = await API.getTopics(uid);
+        const savedTopics = results.data;
         if (savedTopics.length === 0) return null;
-        let newsAPIresults = savedTopics.map(topic => {
-            let articleJSON = await news.get(topic);
-            return articleJSON;
-        });
+        const newsAPIresults = [];
+        for (let obj of savedTopics) {
+            let results = await news.get(obj.topic);
+            newsAPIresults.push(results);
+        }
         return this.parseArticleJSON(savedTopics, newsAPIresults);
     };
-    filterArticles = (θ, contents) => {
-        const sentiments = this.sentimentAnalysis(contents);
+    parseArticleJSON = (topics, newsResults) => {
+        return topics.map((obj, i) => {
+            return {
+                topic: obj.topic,
+                articles: newsResults[i].data.articles.map((article, j) => {
+                    return {
+                        id: j,
+                        source: article.source.name,
+                        link: article.url,
+                        title: article.title,
+                        preview: article.description
+                    }
+                })
+            };
+        });
+    };
+    async filterArticles(θ, contents) {
+        const sentiments = await this.sentimentAnalysis(contents);
         // Map through each article of each topic and predict if user will like it
         return contents.map(content => {
             const filteredArticles = content.articles.map(article => {
@@ -70,7 +87,7 @@ export class Profile extends Component {
                     sentimentTitle: sentiments.find(entry => entry.id === `${content.topic}-${article.id}-title`).score,
                     sentimentPreview: sentiments.find(entry => entry.id === `${content.topic}-${article.id}-preview`).score,
                 });
-                const LR = new LogReg;
+                const LR = new LogReg();
                 return LR.predict(θ, updatedArticle, 0.5) ? updatedArticle : null;
                 // Filter out articles user predicted to not like
             }).filter(article => article);
@@ -93,23 +110,8 @@ export class Profile extends Component {
             });
         });
         let results = await news.sentiment({ documents });
-        return results.documents;
-    };
-    parseArticleJSON = (topics, newsResults) => {
-        return topics.map((topic, i) => {
-            return {
-                topic: topic,
-                articles: newsResults[i].data.articles.map((article, j) => {
-                    return {
-                        id: j,
-                        source: article.source.name,
-                        link: article.url,
-                        title: article.title,
-                        preview: article.description
-                    }
-                })
-            };
-        });
+        console.log(results.data);
+        return results.data.documents;
     };
     async searchArticles(topic) {
         if (!topic) return null;
