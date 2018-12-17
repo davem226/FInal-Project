@@ -1,8 +1,8 @@
 export default class LogReg {
     predict = (θ, article, cutoff) => {
         // Construct X array
-        const X = θ.map(t => {
-            const key = Object.keys(t)[0];
+        const X = θ.map(θobj => {
+            const key = Object.keys(θobj)[0];
             if (key === "intercept") return { key: 1 };
             // Return value of all non dummy-coded columns (except the intercept of course)
             else if (article[key]) return { key: article[key] };
