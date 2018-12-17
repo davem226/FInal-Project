@@ -10,8 +10,8 @@ const Article = sequelize.define("articles", {
         type: Sequelize.TEXT,
         allowNull: false
     },
-    sentimenTitle: {
-        type: Sequelize.INTEGER,
+    sentimentTitle: {
+        type: Sequelize.FLOAT,
         allowNull: false
     },
     preview: {
@@ -19,7 +19,7 @@ const Article = sequelize.define("articles", {
         allowNull: false
     },
     sentimentPreview: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.FLOAT,
         allowNull: false
     },
     uid: {

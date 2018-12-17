@@ -32,10 +32,10 @@ export class Profile extends Component {
     async showSavedArticles(uid) {
         // Array of parameters specific to user
         let θ = await this.estimateParameters(uid);
-
+        console.log(θ);
         // Array of articles JSON for each topic
         const contents = await this.getContents(uid);
-
+        if (!contents) return null;
         // Keep only the articles the user is predicted to like
         const filteredContents = await this.filterArticles(θ, contents);
         // Render articles in DOM; Save θ for use if user add new topic during session
@@ -45,8 +45,9 @@ export class Profile extends Component {
         const LR = new LogReg();
         let results = await API.getArticles(uid);
         const reviewedArticles = results.data;
-        if (reviewedArticles.length === 0) return null;
+        if (reviewedArticles.length === 0) return [];
         const analyzableData = LR.processData(reviewedArticles);
+        console.log(analyzableData);
         return LR.fit(analyzableData, 1000);
     };
     async getContents(uid) {
@@ -87,6 +88,8 @@ export class Profile extends Component {
                     sentimentTitle: sentiments.find(entry => entry.id === `${content.topic}-${article.id}-title`).score,
                     sentimentPreview: sentiments.find(entry => entry.id === `${content.topic}-${article.id}-preview`).score,
                 });
+                // If user hasn't rated any articles, LR.predict fails
+                if (θ.length < 5) return updatedArticle;
                 const LR = new LogReg();
                 return LR.predict(θ, updatedArticle, 0.5) ? updatedArticle : null;
                 // Filter out articles user predicted to not like
@@ -117,11 +120,11 @@ export class Profile extends Component {
         if (!topic) return null;
         this.saveTopic({ topic: topic, uid: this.state.uid });
         let articleJSON = await news.get(topic);
-        const content = this.parseArticleJSON([topic], articleJSON);
-        let filteredContent = this.filterArticles(this.state.θ, [content]);
+        const content = this.parseArticleJSON([{ topic }], [articleJSON]);
+        let filteredContent = await this.filterArticles(this.state.θ, content);
 
         // Update state
-        this.setState(state => { return { contents: [...state.contents, filteredContent] } });
+        this.setState(state => { return { contents: [...state.contents, ...filteredContent] } });
         document.getElementById("article-search").reset();
     };
     saveTopic = ({ topic, uid }) => {
@@ -141,9 +144,11 @@ export class Profile extends Component {
     };
     saveChoice = (choice, uid, article, articleID) => {
         API.saveArticle({
-            source: article.source.name,
+            source: article.source,
             title: article.title,
-            preview: article.description,
+            sentimentTitle: article.sentimentTitle,
+            preview: article.preview,
+            sentimentPreview: article.sentimentPreview,
             uid: uid,
             choice: choice
         }).catch(err => console.log(err));
@@ -192,10 +197,10 @@ export class Profile extends Component {
                             .map((article, i) => (
                                 < Article
                                     id={i}
-                                    link={article.url}
+                                    link={article.link}
                                     title={article.title}
-                                    source={article.source.name}
-                                    preview={article.description}
+                                    source={article.source}
+                                    preview={article.preview}
                                     onclick={() => this.showIsLiked(i)}
                                 >
                                     {this.state.toBeRated.includes(i) ? (
