@@ -1,29 +1,34 @@
 export default class LogReg {
     predict = (θ, article, cutoff) => {
-        // Construct X array
-        const X = θ.map(θobj => {
-            const key = Object.keys(θobj)[0];
-            if (key === "intercept") return { key: 1 };
-            // Return value of all non dummy-coded columns (except the intercept of course)
-            else if (article[key]) return { key: article[key] };
-            // Return 1 for matching dummy-coded column
-            else if (key.split("_")[1] === article.source) return { key: 1 };
-            // Return 0 for all unmatched dummy-coded columns
-            else return { key: 0 }
-        });
-        // Make prediction
-        const z = X.reduce((acc, x) => {
-            const key = Object.keys(x)[0];
-            // Find θ and X values for the same data column
-            const xVal = x[key];
-            const θVal = θ.find(obj => obj[key])[key];
-            return acc + xVal * θVal;
-        });
+        const z = this.z(θ, this.X(θ, article));
         const σ = z => 1 / (1 + Math.exp(-z));
         // P is probability of positive response (i.e. y=1)
         const P = σ(z);
+        // Make prediction
         return P > cutoff ? 1 : 0;
     };
+    X = (θ, article) => {
+        return θ.map(θobj => {
+            const key = Object.keys(θobj)[0];
+            // The intercept x-value is set to 1 by assumption
+            if (key === "intercept") return { [key]: 1 };
+            // Return value of all non dummy-coded columns (except the intercept of course)
+            else if (article[key]) return { [key]: article[key] };
+            // Return 1 for matching dummy-coded column
+            else if (key.split("_")[1] === article.source) return { [key]: 1 };
+            // Return 0 for all unmatched dummy-coded columns
+            else return { [key]: 0 }
+        });
+    }
+    z = (θ, X) => {
+        return X.reduce((acc, x) => {
+            const key = Object.keys(x)[0];
+            // Find θ and X values for the same data column
+            const xVal = x[key];
+            const θVal = θ.find(obj => obj[key]);
+            return acc + xVal * θVal;
+        }, 0);
+    }
     // Estimate parameter values of logistic regression model
     fit = (data, repeat) => {
         const σ = z => 1 / (1 + Math.exp(-z));
@@ -32,19 +37,28 @@ export default class LogReg {
         let θ = [{ intercept: 0 }, ...Object.keys(data[0]).filter(col => col !== "choice").map(col => { return { [col]: 0 } })];
         // Repeat many times
         while (repeat) {
-            const gradients = [0, ...Object.keys(data[0]).filter(col => col !== "choice").map(col => 0)];
+            const gradients = [{ intercept: 0 }, ...Object.keys(data[0]).filter(col => col !== "choice").map(col => { return { [col]: 0 } })];
             // Calculate gradients by summing values over each data point
             data.map(row => {
-                // The intercept x-value is set to 1
-                const x = [1, ...Object.keys(row).filter(col => col !== "choice").map(col => row[col])];
-                const z = x.reduce((acc, val, i) => acc + val * θ[i]);
+                const X = this.X(θ, row);
+                const z = this.z(θ, X);
                 // Update the gradient of each parameter using the current data point
                 gradients.map((grad, i) => {
-                    gradients[i] = grad + (row.choice - σ(z)) * x[i];
+                    const key = Object.keys(grad)[0];
+                    const XVal = X.find(obj => obj[key]);
+                    gradients[i][key] = grad[key] + (row.choice - σ(z)) * XVal;
                 });
             });
             // Update parameters after gradients are calculated
-            θ = θ.map((obj, i) => { return { [Object.keys(obj)[0]]: Object.values(obj)[0] + η * gradients[i] } });
+            θ = θ.map(obj => {
+                const key = Object.keys(obj)[0];
+                const gradVal = gradients.find(obj => obj[key]);
+                const θold = obj[key];
+                const θnew = θold + η * gradVal;
+                return {
+                    [key]: θnew
+                }
+            });
             repeat--;
         }
         return θ;
@@ -52,26 +66,27 @@ export default class LogReg {
     // Make data analyzable
     processData = data => {
         // Dummy code categorical data
-        const dummySource = this.dummyCode(data, "source");
+        // const dummySource = this.dummyCode(data, "source");
+
         // Concatenate data
         return data.map(row => {
             return {
                 choice: row.choice === "yes" ? 1 : 0,
                 sentimentTitle: row.sentimentTitle,
                 sentimentPreview: row.sentimentPreview,
-                ...dummySource.find(obj => obj.id === row.id)
+                // ...dummySource.find(obj => obj.id === row.id)
             };
         })
     };
     // Outputs array of objects with dummy coded categorical variables
     dummyCode = (data, column) => {
-        const categories = data.filter((row, i) => data.indexOf(row[column]) === i);
+        const categories = data.filter((row, i) => i === data.findIndex(obj => obj[column] === row[column])).map(row => row[column]);
         return data.map(row => {
             const dummyData = { id: row.id };
             categories.map(cat => {
                 dummyData[`${column}_${cat}`] = row[column] === cat ? 1 : 0;
             });
             return dummyData;
-        })
+        });
     };
 }

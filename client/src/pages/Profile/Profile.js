@@ -48,7 +48,10 @@ export class Profile extends Component {
         if (reviewedArticles.length === 0) return [];
         const analyzableData = LR.processData(reviewedArticles);
         console.log(analyzableData);
-        return LR.fit(analyzableData, 1000);
+        const θ = LR.fit(analyzableData, 1000);
+        // Regression won't give valid results unless number of data points >> than number of parameters
+        if (analyzableData.length > θ.length + 5) return θ;
+        else return [];
     };
     async getContents(uid) {
         let results = await API.getTopics(uid);
@@ -89,7 +92,7 @@ export class Profile extends Component {
                     sentimentPreview: sentiments.find(entry => entry.id === `${content.topic}-${article.id}-preview`).score,
                 });
                 // If user hasn't rated any articles, LR.predict fails
-                if (θ.length < 5) return updatedArticle;
+                if (θ.length === 0) return updatedArticle;
                 const LR = new LogReg();
                 return LR.predict(θ, updatedArticle, 0.5) ? updatedArticle : null;
                 // Filter out articles user predicted to not like
