@@ -32,7 +32,6 @@ export class Profile extends Component {
     async showSavedArticles(uid) {
         // Array of parameters specific to user
         let θ = await this.estimateParameters(uid);
-        console.log(θ);
         // Array of articles JSON for each topic
         const contents = await this.getContents(uid);
         if (!contents) return null;

@@ -4,6 +4,8 @@ export default class LogReg {
         const σ = z => 1 / (1 + Math.exp(-z));
         // P is probability of positive response (i.e. y=1)
         const P = σ(z);
+        console.log("id: " + article.id);
+        console.log("Prob: " + P);
         // Make prediction
         return P > cutoff ? 1 : 0;
     };
@@ -25,7 +27,7 @@ export default class LogReg {
             const key = Object.keys(x)[0];
             // Find θ and X values for the same data column
             const xVal = x[key];
-            const θVal = θ.find(obj => obj[key]);
+            const θVal = θ.find(obj => Object.keys(obj)[0] === key)[key];
             return acc + xVal * θVal;
         }, 0);
     }
@@ -45,14 +47,14 @@ export default class LogReg {
                 // Update the gradient of each parameter using the current data point
                 gradients.map((grad, i) => {
                     const key = Object.keys(grad)[0];
-                    const XVal = X.find(obj => obj[key]);
+                    const XVal = X.find(obj => Object.keys(obj)[0] === key)[key];
                     gradients[i][key] = grad[key] + (row.choice - σ(z)) * XVal;
                 });
             });
             // Update parameters after gradients are calculated
             θ = θ.map(obj => {
                 const key = Object.keys(obj)[0];
-                const gradVal = gradients.find(obj => obj[key]);
+                const gradVal = gradients.find(obj => Object.keys(obj)[0] === key)[key];
                 const θold = obj[key];
                 const θnew = θold + η * gradVal;
                 return {
